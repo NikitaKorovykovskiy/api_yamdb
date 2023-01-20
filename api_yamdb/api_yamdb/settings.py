@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'djoser',
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +101,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+# User
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Static files (CSS, JavaScript, Images)
 
