@@ -18,6 +18,15 @@ class IsAdminModeratorOwnerOrReadOnly(permissions.BasePermission):
                 )
 
 
+class IsSuperUser(permissions.BasePermission):
+    """
+    Доступ суперюзера
+    """
+    
+    def has_permission(self, request, view):
+        return request.user.is_superuser
+
+
 class IsAdminOrReadOnly(permissions.BasePermission):
     """
     Полное разрешение для Админа,
@@ -30,20 +39,6 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         return bool(request.user and request.user.is_staff)
 
 
-class IsAdmin(permissions.BasePermission):
-    """
-    Полный доступ для Суперюзера
-    """
-
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and (
-            request.user.is_admin
-        )
 
 
-class IsSuperUser(permissions.BasePermission):
-    """
-    Доступ суперюзера
-    """
-    def has_permission(self, request, view):
-        return request.user.is_superuser
+
