@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from .mixins import CreateListDestroyViewSet
 from reviews.models import Category, Genre, Title
 from .serializers import CategorySerializer, GenreSerializer, TitleReadSerializer, TitleWriteSerializer
-from .permission import IsAdminOrReadOnly
+from .permission import IsAdminOrReadOnly, IsAdminModeratorOwnerOrReadOnly
 from .filters import TitleFilter
 
 class CategoryViewSet(CreateListDestroyViewSet):
@@ -15,7 +15,7 @@ class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all().order_by('-id')
     pagination_class = PageNumberPagination
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminModeratorOwnerOrReadOnly]
     filter_backends = (SearchFilter,)
     search_fields = ('=name',)
     lookup_field = 'slug'
@@ -27,7 +27,7 @@ class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all().order_by('-id')
     pagination_class = PageNumberPagination
     serializer_class = GenreSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminModeratorOwnerOrReadOnly]
     filter_backends = (SearchFilter,)
     search_fields = ('=name',)
     lookup_field = 'slug'

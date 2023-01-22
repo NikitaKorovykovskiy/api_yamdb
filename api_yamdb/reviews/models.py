@@ -50,7 +50,7 @@ class Genre(models.Model):
 class Title(models.Model):
     name = models.CharField(
         verbose_name='Название произведения', 
-        max_length=200,
+        max_length=256,
         help_text='Укажите название произведения'
     )
     year = models.IntegerField(
