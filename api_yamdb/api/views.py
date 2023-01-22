@@ -48,6 +48,5 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
 
 
-# class APISignup(APIView):
-#     queryset = CustomUser.objects.all()
-#     serializer_class = UserSignUpSerializer
+class APISignup(APIView):
+    pass
