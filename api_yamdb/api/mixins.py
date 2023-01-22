@@ -8,7 +8,4 @@ class CreateListDestroyViewSet(
 mixins.CreateModelMixin, mixins.ListModelMixin,
 mixins.DestroyModelMixin, viewsets.GenericViewSet,
 ):
-    permission_classes = [
-        IsAuthenticatedOrReadOnly,
-        IsAdminOrReadOnly
-    ]
+    pass
