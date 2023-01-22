@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 class CustomUser(AbstractUser):
@@ -13,12 +13,16 @@ class CustomUser(AbstractUser):
         (MODERATOR, 'Модератор'),
         (ADMIN, 'Администратор'),
     ]
-
+    
+    username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(
         'email adress', max_length=156, blank=True, unique=True
     )
     role = models.CharField('Роль', max_length= 150, choices=ROLE_CHOICES, default=USER)
     bio = models.TextField('Биография', blank=True)
+
+    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = 'email'
 
     @property
     def is_user(self):
