@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(
         'email adress', max_length=156, blank=True, unique=True
     )
-    role = models.CharField('Роль', choices=ROLE_CHOICES, default=USER)
+    role = models.CharField('Роль', max_length= 150, choices=ROLE_CHOICES, default=USER)
     bio = models.TextField('Биография', blank=True)
 
     @property
