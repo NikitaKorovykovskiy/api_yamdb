@@ -1,11 +1,12 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator, ValidationError
 
 from reviews.models import Category, Genre, Title
+from users.models import CustomUser
 
 
 class CategorySerializer(serializers.ModelSerializer):
     """Сериализатор для категорий произведений."""
-
 
     class Meta:
         model = Category
@@ -14,7 +15,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор для жанров произведений."""
-
 
     class Meta:
         model = Genre
@@ -64,3 +64,41 @@ class TitleWriteSerializer(serializers.ModelSerializer):
             'description', 'genre',
             'category'
         )
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role'
+        ]
+        validator = [
+            UniqueTogetherValidator(
+                queryset=CustomUser.objects.all(),
+                fields=['username', 'email']
+            )
+        ]
+
+
+class UserSignUpSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=CustomUser.objects.all(),
+                fields=['username', 'email']
+            )
+        ]
+
+    # def validate_username(self, value):
+    #     if value.lower() == 'me':
+    #         raise ValidationError('username не может быть "me"')
+    #     return value
