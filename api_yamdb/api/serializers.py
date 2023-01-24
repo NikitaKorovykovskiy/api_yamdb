@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator, ValidationError
 
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Genre, Title, Comment, Review
 from users.models import CustomUser
 
 
@@ -102,3 +102,42 @@ class UserSignUpSerializer(serializers.ModelSerializer):
     #     if value.lower() == 'me':
     #         raise ValidationError('username не может быть "me"')
     #     return value
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    title = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+        )
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+        )
+
+    def validate(self, data):
+        if self.context['request'].method != 'POST':
+            return data
+
+        title_id = self.context['view'].kwargs.get('title_id')
+        if Review.objects.filter(
+                title_id=title_id, author=self.context['request'].user
+        ).exists():
+            raise ValidationError(
+                'Отзыв уже оставлен'
+            )
+        return data
+
+    class Meta:
+        model = Review
+        fields = ('id', 'title', 'text', 'author', 'score', 'pub_date')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username', 
+        read_only=True
+    )
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'pub_date')
+        model = Comment
