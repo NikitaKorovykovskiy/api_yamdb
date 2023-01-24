@@ -98,11 +98,6 @@ class UserSignUpSerializer(serializers.ModelSerializer):
             )
         ]
 
-    # def validate_username(self, value):
-    #     if value.lower() == 'me':
-    #         raise ValidationError('username не может быть "me"')
-    #     return value
-
 
 class ReviewSerializer(serializers.ModelSerializer):
     title = serializers.SlugRelatedField(
@@ -134,7 +129,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
-        slug_field='username', 
+        slug_field='username',
         read_only=True
     )
 
