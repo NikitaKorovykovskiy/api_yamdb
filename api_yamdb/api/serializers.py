@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator, ValidationError
 
 from reviews.models import Category, Genre, Title
 from users.models import CustomUser
@@ -26,7 +25,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(
-        many=True, 
+        many=True,
         read_only=True
     )
 
@@ -56,7 +55,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
         many=True,
         queryset=Genre.objects.all(),
     )
-    
+
     class Meta:
         model = Title
         fields = (
@@ -70,35 +69,46 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = [
-            'username',
-            'email',
+        fields = (
             'first_name',
             'last_name',
+            'username',
             'bio',
-            'role'
-        ]
-        validator = [
-            UniqueTogetherValidator(
-                queryset=CustomUser.objects.all(),
-                fields=['username', 'email']
+            'email',
+            'role',
+        )
+
+    def validate_username(self, value):
+        if value == 'me':
+            raise serializers.ValidationError(
+                'Имя пользователя не может быть "me"'
             )
-        ]
+        return value
 
 
-class UserSignUpSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        max_length=254,
+        required=True
+    )
+    username = serializers.RegexField(
+        max_length=150,
+        required=True,
+        regex=r'^[\w.@+-]'
+    )
 
-    class Meta:
-        model = CustomUser
-        fields = ('username', 'email')
-        validators = [
-            UniqueTogetherValidator(
-                queryset=CustomUser.objects.all(),
-                fields=['username', 'email']
+    def validate_username(self, value):
+        if value == 'me':
+            raise serializers.ValidationError(
+                'Имя пользователя не может быть "me"'
             )
-        ]
+        return value
 
-    # def validate_username(self, value):
-    #     if value.lower() == 'me':
-    #         raise ValidationError('username не может быть "me"')
-    #     return value
+
+class TokenSerializer(serializers.Serializer):
+    username = serializers.RegexField(
+        max_length=150,
+        required=True,
+        regex=r'^[\w.@+-]'
+    )
+    confirmation_code = serializers.CharField(required=True)
