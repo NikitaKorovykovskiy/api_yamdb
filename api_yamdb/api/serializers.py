@@ -28,17 +28,20 @@ class TitleReadSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True
     )
+    rating = serializers.IntegerField(
+        source='reviews__score__avg',
+        read_only=True
+    )
 
     class Meta:
         model = Title
         fields = (
-            'id', 'name', 'year',
-            'description', 'genre',
-            'category'
-        )
-        read_only_fields = (
-            'id', 'name', 'year',
-            'description', 'genre',
+            'id',
+            'name',
+            'year',
+            'rating',
+            'description',
+            'genre',
             'category'
         )
 
@@ -58,11 +61,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = (
-            'id', 'name', 'year',
-            'description', 'genre',
-            'category'
-        )
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -118,11 +117,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     title = serializers.SlugRelatedField(
         slug_field='name',
         read_only=True,
-        )
+    )
     author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True,
-        )
+    )
 
     def validate(self, data):
         if self.context['request'].method != 'POST':

@@ -1,6 +1,7 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db import IntegrityError
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
@@ -56,15 +57,22 @@ class TitleViewSet(viewsets.ModelViewSet):
     Для запросов на изменение используется TitleWriteSerializer
     """
 
-    queryset = Title.objects.all()
+    #  queryset = Title.objects.all()
+    queryset = Title.objects.all().annotate(
+        Avg('reviews__score')).order_by('name')
     permission_classes = [IsAdmin | ReadOnly]
-    filter_backends = (DjangoFilterBackend)
+    #  pagination_class = LimitOffsetPagination,
+    filter_backends = (DjangoFilterBackend, SearchFilter,)
     filterset_class = TitleFilter
+    search_fields = ['name', 'category', 'slug']
 
     def get_serializer_class(self):
-        if self.action in ('create', 'update', 'partial_update'):
-            return TitleWriteSerializer
-        return TitleReadSerializer
+        #  if self.action in ('create', 'update', 'partial_update'):
+        #  return TitleWriteSerializer
+        #  return TitleReadSerializer
+        if self.action == 'retrieve' or self.action == 'list':
+            return TitleReadSerializer
+        return TitleWriteSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
