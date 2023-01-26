@@ -2,6 +2,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from users.models import CustomUser
+from reviews.validators import validate_year
 
 
 class Category(models.Model):
@@ -24,8 +25,8 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-        
-        
+
+
 class Genre(models.Model):
     name = models.CharField(
         verbose_name='Жанр',
@@ -46,17 +47,18 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
-        
-        
+
+
 class Title(models.Model):
     name = models.CharField(
-        verbose_name='Название произведения', 
+        verbose_name='Название произведения',
         max_length=256,
         help_text='Укажите название произведения'
     )
     year = models.IntegerField(
         verbose_name='Год выпуска',
-        help_text='Укажите год выпуска произведения'
+        help_text='Укажите год выпуска произведения',
+        validators=(validate_year,),
     )
     description = models.TextField(
         max_length=200,
