@@ -5,7 +5,9 @@
 
 ## Команда разработки
 [@NikitaKorovykovskiy](https://github.com/NikitaKorovykovskiy) (тимлид, управление пользователями (Auth и Users): система регистрации и аутентификации, права доступа, работу с токеном, систему подтверждения через e-mail)
+
 [@Catarinaegorova](https://github.com/catarinaegorova) (категории (Categories), жанры (Genres) и произведения (Titles): модели, представления и эндпойнты для них, реализация механизма импорта данных из csv файлов)
+
 [@SKirisyuk](https://github.com/SKirisyuk) (отзывы (Review) и комментариями (Comments): модели, представления, эндпойнты и реализация рейтинга произведений)
 
 ## Стек технологии
