@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
-from reviews.models import Category, Genre, Title, Comment, Review
+
+from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import CustomUser
 
 
@@ -118,11 +119,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     title = serializers.SlugRelatedField(
         slug_field='name',
         read_only=True,
-        )
+    )
     author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True,
-        )
+    )
 
     def validate(self, data):
         if self.context['request'].method != 'POST':

@@ -31,7 +31,7 @@ class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all().order_by('-id')
     pagination_class = PageNumberPagination
     serializer_class = CategorySerializer
-    permission_classes = [AuthorAdminModeratorOrReadOnly]
+    permission_classes = [IsAdmin | ReadOnly]
     filter_backends = (SearchFilter,)
     search_fields = ('=name',)
     lookup_field = 'slug'
@@ -43,7 +43,7 @@ class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all().order_by('-id')
     pagination_class = PageNumberPagination
     serializer_class = GenreSerializer
-    permission_classes = [AuthorAdminModeratorOrReadOnly]
+    permission_classes = [IsAdmin | ReadOnly]
     filter_backends = (SearchFilter,)
     search_fields = ('=name',)
     lookup_field = 'slug'
@@ -74,11 +74,12 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
+    http_method_names = ['get', 'post', 'patch', 'head', 'delete']
 
     @action(
         methods=['get', 'patch'],
         detail=False,
-        permission_classes=(IsAuthenticated,),
+        permission_classes=(IsAuthenticated,)
     )
     def me(self, request):
         if request.method == 'GET':

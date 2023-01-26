@@ -14,11 +14,13 @@ class CustomUser(AbstractUser):
         (ADMIN, 'Администратор'),
     ]
 
-    username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(
-        'email adress', max_length=156, blank=True, unique=True
+        'email adress', max_length=254, unique=True
     )
-    role = models.CharField('Роль', max_length= 150, choices=ROLE_CHOICES, default=USER)
+    role = models.CharField(
+        'Роль', max_length=150,
+        choices=ROLE_CHOICES, default=USER
+    )
     bio = models.TextField('Биография', blank=True)
 
     REQUIRED_FIELDS = ['username']
