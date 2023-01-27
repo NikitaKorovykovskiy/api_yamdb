@@ -13,17 +13,17 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from api_yamdb.settings import ADMIN_EMAIL
+from django.conf import settings
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import CustomUser
-
 from .filters import TitleFilter
 from .mixins import CreateListDestroyViewSet
 from .permission import AuthorAdminModeratorOrReadOnly, IsAdmin, ReadOnly
-from .serializers import (CategorySerializer, CommentSerializer,
-                          GenreSerializer, ReviewSerializer, SignupSerializer,
-                          TitleReadSerializer, TitleWriteSerializer,
-                          TokenSerializer, UserSerializer)
+from .serializers import (
+    CategorySerializer, CommentSerializer, GenreSerializer, ReviewSerializer,
+    SignupSerializer, TitleReadSerializer, TitleWriteSerializer,
+    TokenSerializer, UserSerializer
+)
 
 SUBJECT = 'YaMDb: код подверждения'
 MESSAGE = 'Ваш код подтверждения - {}'
@@ -62,14 +62,15 @@ class TitleViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Title.objects.all().annotate(
-        Avg('reviews__score')).order_by('name')
+        Avg('reviews__score')
+    ).order_by('name')
     permission_classes = [IsAdmin | ReadOnly]
     filter_backends = (DjangoFilterBackend, SearchFilter,)
     filterset_class = TitleFilter
     search_fields = ['name', 'category', 'slug']
 
     def get_serializer_class(self):
-        if self.action == 'retrieve' or self.action == 'list':
+        if self.action in ('retrieve', 'list'):
             return TitleReadSerializer
         return TitleWriteSerializer
 
@@ -118,7 +119,7 @@ def signup(request):
     send_mail(
         SUBJECT,
         MESSAGE.format(confirmation_code),
-        ADMIN_EMAIL,
+        settings.ADMIN_EMAIL,
         [user.email],
     )
     return Response(serializer.data, status=status.HTTP_200_OK)
