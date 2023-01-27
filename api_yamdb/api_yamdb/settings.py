@@ -102,7 +102,7 @@ USE_L10N = True
 USE_TZ = True
 
 # User
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 # Static files (CSS, JavaScript, Images)
 
@@ -131,8 +131,7 @@ SIMPLE_JWT = {
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'zndexpraktikum@gmail.com'
-EMAIL_HOST_PASSWORD = 'Zndex159'
+EMAIL_HOST_PASSWORD = '1112223'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db import IntegrityError
@@ -13,17 +14,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from django.conf import settings
 from reviews.models import Category, Comment, Genre, Review, Title
-from users.models import CustomUser
+from users.models import User
+
 from .filters import TitleFilter
 from .mixins import CreateListDestroyViewSet
 from .permission import AuthorAdminModeratorOrReadOnly, IsAdmin, ReadOnly
-from .serializers import (
-    CategorySerializer, CommentSerializer, GenreSerializer, ReviewSerializer,
-    SignupSerializer, TitleReadSerializer, TitleWriteSerializer,
-    TokenSerializer, UserSerializer
-)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer, SignupSerializer,
+                          TitleReadSerializer, TitleWriteSerializer,
+                          TokenSerializer, UserSerializer)
 
 SUBJECT = 'YaMDb: код подверждения'
 MESSAGE = 'Ваш код подтверждения - {}'
@@ -76,7 +76,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
+    queryset = User.objects.all()
     permission_classes = (IsAdmin, )
     serializer_class = UserSerializer
     filter_backends = (SearchFilter,)
@@ -109,7 +109,7 @@ def signup(request):
     serializer = SignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     try:
-        user, created = CustomUser.objects.get_or_create(
+        user, created = User.objects.get_or_create(
             email=serializer.validated_data['email'],
             username=serializer.validated_data['username'],
         )
@@ -131,7 +131,7 @@ def token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user = get_object_or_404(
-        CustomUser,
+        User,
         username=serializer.validated_data['username'],
     )
     if not default_token_generator.check_token(

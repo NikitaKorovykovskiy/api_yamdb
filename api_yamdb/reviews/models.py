@@ -1,8 +1,8 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from users.models import CustomUser
 from reviews.validators import validate_year
+from users.models import User
 
 
 class Category(models.Model):
@@ -94,7 +94,7 @@ class Title(models.Model):
 class Review(models.Model):
     text = models.TextField()
     author = models.ForeignKey(
-        CustomUser,
+        User,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Автор'
@@ -138,7 +138,7 @@ class Comment(models.Model):
         verbose_name='Текст'
     )
     author = models.ForeignKey(
-        CustomUser,
+        User,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Автор'
