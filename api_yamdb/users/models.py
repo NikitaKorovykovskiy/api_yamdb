@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
         (ADMIN, 'Администратор'),
     ]
 
+    username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(
         'email adress', max_length=254, unique=True
     )
