@@ -14,16 +14,20 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from api_yamdb.settings import ADMIN_EMAIL
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Genre, Review, Title
 from users.models import CustomUser
 
 from .filters import TitleFilter
 from .mixins import CreateListDestroyViewSet
 from .permission import AuthorAdminModeratorOrReadOnly, IsAdmin, ReadOnly
-from .serializers import (CategorySerializer, GenreSerializer,
-                          SignupSerializer, TitleReadSerializer,
-                          TitleWriteSerializer, TokenSerializer,
-                          UserSerializer)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer, SignupSerializer,
+                          TitleReadSerializer, TitleWriteSerializer,
+                          TokenSerializer, UserSerializer)
+
+SUBJECT = 'YaMDb: код подверждения'
+MESSAGE = 'Ваш код подтверждения - {}'
+FIELD_ERROR = 'Неуникальное поле. Пользователь с таким {} уже существует'
 
 
 class CategoryViewSet(CreateListDestroyViewSet):
@@ -77,7 +81,7 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
-    http_method_names = ['get', 'post', 'patch', 'head', 'delete']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     @action(
         methods=['get', 'patch'],
@@ -96,11 +100,6 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(role=request.user.role)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-SUBJECT = 'YaMDb: код подверждения'
-MESSAGE = 'Ваш код подтверждения - {}'
-FIELD_ERROR = 'Неуникальное поле. Пользователь с таким {} уже существует'
 
 
 @api_view(['POST'])
@@ -143,3 +142,35 @@ def token(request):
         'token': str(token),
     }
     return Response(data)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [AuthorAdminModeratorOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(
+            author=self.request.user,
+            review=get_object_or_404(Review, id=self.kwargs.get('review_id')),
+        )
+
+    def get_queryset(self):
+        return get_object_or_404(
+            Review, id=self.kwargs.get('review_id')
+        ).comments.select_related('author')
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    permission_classes = [AuthorAdminModeratorOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(
+            author=self.request.user,
+            title=get_object_or_404(Title, id=self.kwargs.get('title_id')),
+        )
+
+    def get_queryset(self):
+        return get_object_or_404(
+            Title, id=self.kwargs.get('title_id')
+        ).reviews.select_related('author')
