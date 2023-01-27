@@ -105,13 +105,13 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Произведение'
     )
-    score = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(10)]
+    score = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1, 'Введите целое число от 1 до 10'),
+            MaxValueValidator(10, 'Введите целое число от 1 до 10')
+        ],
     )
     pub_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.text
 
     class Meta:
         ordering = ['-pub_date']
@@ -124,6 +124,9 @@ class Review(models.Model):
             )
         ]
 
+    def __str__(self):
+        return self.text
+
 
 class Comment(models.Model):
     review = models.ForeignKey(
@@ -131,7 +134,9 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    text = models.TextField(max_length=200)
+    text = models.TextField(
+        verbose_name='Текст'
+    )
     author = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
@@ -140,13 +145,13 @@ class Comment(models.Model):
     )
     pub_date = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.text
-
     class Meta:
         ordering = ['-pub_date']
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text
 
 
 class GenreToTitle(models.Model):

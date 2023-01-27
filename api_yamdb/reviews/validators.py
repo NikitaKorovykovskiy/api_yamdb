@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 
 def validate_year(value):
-    if value >= datetime.now().year:
+    if value > datetime.now().year:
         raise ValidationError(
-            'Не верно указан год!'
+            'Неверно указан год!'
         )
