@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from reviews.models import Category, Comment, Genre, Review, Title
-from users.models import CustomUser
+from users.models import User
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -68,7 +68,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
             'first_name',
             'last_name',
@@ -124,6 +124,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    class Meta:
+        model = Review
+        fields = '__all__'
+
     def validate(self, data):
         if self.context['request'].method != 'POST':
             return data
@@ -136,10 +140,6 @@ class ReviewSerializer(serializers.ModelSerializer):
                 'Отзыв уже оставлен'
             )
         return data
-
-    class Meta:
-        model = Review
-        fields = '__all__'
 
 
 class CommentSerializer(serializers.ModelSerializer):
