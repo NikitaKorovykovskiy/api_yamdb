@@ -84,7 +84,7 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     http_method_names = ['get', 'post', 'patch', 'delete']
 
-    @action(
+    @ action(
         methods=['get', 'patch'],
         detail=False,
         permission_classes=(IsAuthenticated,)
@@ -103,8 +103,8 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
+@ api_view(['POST'])
+@ permission_classes([AllowAny])
 def signup(request):
     serializer = SignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -125,8 +125,8 @@ def signup(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
+@ api_view(['POST'])
+@ permission_classes([AllowAny])
 def token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
