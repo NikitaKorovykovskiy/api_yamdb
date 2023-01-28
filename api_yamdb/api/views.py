@@ -16,14 +16,15 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
-
 from .filters import TitleFilter
 from .mixins import CreateListDestroyViewSet
 from .permission import AuthorAdminModeratorOrReadOnly, IsAdmin, ReadOnly
-from .serializers import (CategorySerializer, CommentSerializer,
-                          GenreSerializer, ReviewSerializer, SignupSerializer,
-                          TitleReadSerializer, TitleWriteSerializer,
-                          TokenSerializer, UserSerializer)
+from .serializers import (
+    CategorySerializer, CommentSerializer,
+    GenreSerializer, ReviewSerializer, SignupSerializer,
+    TitleReadSerializer, TitleWriteSerializer,
+    TokenSerializer, UserSerializer
+)
 
 SUBJECT = 'YaMDb: код подверждения'
 MESSAGE = 'Ваш код подтверждения - {}'
