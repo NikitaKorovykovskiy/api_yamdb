@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
 from .filters import TitleFilter
-from .mixins import CreateListDestroyViewSet
+from .mixins import CreateListDestroyViewSet, UserMixin
 from .permission import AuthorAdminModeratorOrReadOnly, IsAdmin, ReadOnly
 from .serializers import (
     CategorySerializer, CommentSerializer,
@@ -76,16 +76,15 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleWriteSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(UserMixin):
     queryset = User.objects.all()
     permission_classes = (IsAdmin, )
     serializer_class = UserSerializer
     filter_backends = (SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
-    http_method_names = ['get', 'post', 'patch', 'delete']
 
-    @ action(
+    @action(
         methods=['get', 'patch'],
         detail=False,
         permission_classes=(IsAuthenticated,)
@@ -104,8 +103,8 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@ api_view(['POST'])
-@ permission_classes([AllowAny])
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
     serializer = SignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -126,8 +125,8 @@ def signup(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@ api_view(['POST'])
-@ permission_classes([AllowAny])
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
